@@ -1,103 +1,273 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaLock,
+  FaUser,
+  FaInfoCircle,
+} from "react-icons/fa";
+import { motion } from "framer-motion";
+import Link from "next/link";
+
+export default function Login() {
+  const { login, loading } = useAuth();
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showAbout, setShowAbout] = useState(true); // Changed to true to show by default for first-time users
+  const [firstVisit, setFirstVisit] = useState(true);
+
+  useEffect(() => {
+    // Hide about section after 10 seconds for first-time users
+    if (firstVisit) {
+      const timer = setTimeout(() => {
+        setShowAbout(false);
+        setFirstVisit(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [firstVisit]);
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!acceptTerms) {
+      setError("You must accept the Terms and Policy to continue");
+      return;
+    }
+
+    setError("");
+    try {
+      const res = await login(userId, password);
+      const userData = res.data;
+      if (userData.Schedule.length === 0) {
+        setError("Invalid User ID or Password");
+        return;
+      }
+    } catch (err) {
+      setError("Failed to login. Please try again.");
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleAbout = () => {
+    setShowAbout(!showAbout);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-xl border border-blue-50"
+      >
+        <motion.div
+          className="text-center"
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex justify-center mb-[-2rem]">
+            <img
+              src="/logo.png"
+              alt="AIUB Logo"
+              className="h-40 w-auto drop-shadow-md transition-all hover:scale-105"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+        </motion.div>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-red-500 text-center font-medium bg-red-50 py-3 px-4 rounded-lg border-l-4 border-red-500"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            {error}
+          </motion.div>
+        )}
+
+        <form className="space-y-5" onSubmit={handleLogin}>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FaUser className="text-gray-400" />
+            </div>
+            <input
+              id="userid"
+              name="userid"
+              type="text"
+              onChange={(e) => setUserId(e.target.value)}
+              value={userId}
+              required
+              autoComplete="username"
+              className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-400 text-[#003366] transition-all"
+              placeholder="User ID eg. XX-XXXXX-X"
+            />
+          </div>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FaLock className="text-gray-400" />
+            </div>
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+              autoComplete="current-password"
+              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-400 text-[#003366] transition-all"
+              placeholder="Password"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none transition-colors"
+            >
+              {showPassword ? (
+                <FaEyeSlash className="text-lg" />
+              ) : (
+                <FaEye className="text-lg" />
+              )}
+            </button>
+          </div>
+
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
+              />
+            </div>
+            <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
+              I accept the{" "}
+              <Link
+                href="/terms"
+                className="text-blue-600 hover:underline hover:text-blue-800"
+              >
+                Terms and Policy
+              </Link>
+            </label>
+          </div>
+
+          <div>
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-3 px-4 rounded-lg text-white font-medium bg-gradient-to-r from-blue-700 to-[#003366] hover:from-blue-800 hover:to-[#002244] focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed shadow-md transition-all"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </motion.button>
+          </div>
+
+          <div className="flex justify-between items-center pt-2">
+            <a
+              href="#"
+              className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+            >
+              Forgot Password?
+            </a>
+            <motion.button
+              type="button"
+              onClick={toggleAbout}
+              className="text-sm flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+              whileHover={{ scale: 1.05 }}
+              animate={
+                firstVisit
+                  ? {
+                      scale: [1, 1.1, 1],
+                      transition: {
+                        repeat: 3,
+                        repeatType: "reverse",
+                        duration: 1,
+                      },
+                    }
+                  : {}
+              }
+            >
+              <FaInfoCircle className={firstVisit ? "text-blue-700" : ""} />
+              About
+            </motion.button>
+          </div>
+        </form>
+
+        {/* Updated About Section */}
+        {showAbout && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-4 bg-blue-50 rounded-lg p-4 text-sm border-l-4 border-blue-500"
+          >
+            <motion.h3
+              className="font-medium text-blue-700 mb-2"
+              animate={{ color: ["#1d4ed8", "#3b82f6", "#1d4ed8"] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              AIUB Class Scheduler(AIUB CS)
+            </motion.h3>
+
+            <p className="text-gray-700 mb-2">
+              Tired of manually creating your class routine every semester? Say
+              goodbye to the hassle, this tool automatically generates your
+              class schedule for you.
+            </p>
+
+            <p className="text-gray-700 mb-2">
+              Log in with your AIUB credentials, pick your preferred courses,
+              hit ‘Generate’ — and boom! Your perfect routine is ready without
+              any clash or hassle.
+            </p>
+
+            <p className="text-gray-700 mb-2">What it offers:</p>
+            <ul className="list-disc pl-5 text-gray-700 mb-2">
+              <li>Select your preferred open credit courses</li>
+              <li>
+                Generate an optimized, clash-free class routine in seconds
+              </li>
+              <li>
+                Automatically skips canceled, reserved, or freshman-only courses
+              </li>
+              <li>
+                Prioritizes your course preferences and available time slots
+              </li>
+            </ul>
+
+            <motion.p
+              className="text-gray-700 text-xs mt-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              Built with 💙 by{" "}
+              <a
+                className="text-blue-500 font-semibold hover:underline"
+                href="https://roman0190.github.io/portfolio/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Roman Howladar
+              </a>{" "}
+              — crafted exclusively for AIUB students to eliminate the hassle of
+              manual routine making. Focus on what matters — learning, not
+              scheduling.
+            </motion.p>
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 }

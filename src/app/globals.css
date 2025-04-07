@@ -24,3 +24,88 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.course-scheduler {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.create-schedule-btn {
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.create-schedule-btn:hover {
+  background-color: #0056b3;
+}
+
+.schedule-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.schedule-variant {
+  margin-bottom: 30px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.schedule-grid {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.schedule-grid th,
+.schedule-grid td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.schedule-grid th {
+  background-color: #f4f4f4;
+}
+
+.day-title {
+  font-weight: bold;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+.course-slot {
+  background-color: #f1f1f1;
+  color: black;
+  padding: 5px;
+  margin: 2px;
+  border: 1px solid #ccc;
+}
+
+.course-slot.theory {
+  background-color: #d4edda;
+}
+
+.course-slot.lab {
+  background-color: #cce5ff;
+}
+
+.empty-slot {
+  background-color: #f9f9f9;
+  height: 40px;
+}
+
+.loading-spinner {
+  font-size: 18px;
+  color: #007bff;
+  margin-top: 20px;
+}
