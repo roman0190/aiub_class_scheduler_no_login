@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { LogOut, RefreshCcw, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";

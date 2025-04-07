@@ -16,6 +16,21 @@ const formatTimeDisplay = (time: string) => {
   return time.replace("-", " - ");
 };
 
+// Convert time string to minutes for sorting (e.g., "8:30 AM" -> minutes since midnight)
+const timeToMinutes = (timeStr: string): number => {
+  // Extract hours and minutes
+  const [time, period] = timeStr.trim().split(" ");
+  let hours;
+  const minutes = time.split(":").map(Number)[1];
+  hours = time.split(":").map(Number)[0];
+
+  // Convert to 24-hour format
+  if (period === "PM" && hours < 12) hours += 12;
+  if (period === "AM" && hours === 12) hours = 0;
+
+  return hours * 60 + minutes;
+};
+
 // Create a styled paragraph
 const createStyledParagraph = (
   text: string,
@@ -108,9 +123,14 @@ export const exportToWord = async (
   // Sort courses by time for each day
   Object.keys(coursesByDay).forEach((day) => {
     coursesByDay[day].sort((a, b) => {
-      const timeA = b.time.split(" - ")[0];
-      const timeB = a.time.split(" - ")[0];
-      return timeA.localeCompare(timeB);
+      const timeAStart = a.time.split(" - ")[0];
+      const timeBStart = b.time.split(" - ")[0];
+
+      // Convert to minutes for proper chronological sorting
+      const minutesA = timeToMinutes(timeAStart);
+      const minutesB = timeToMinutes(timeBStart);
+
+      return minutesA - minutesB;
     });
   });
 

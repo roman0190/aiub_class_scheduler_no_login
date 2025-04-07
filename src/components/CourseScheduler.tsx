@@ -75,8 +75,8 @@ const checkConflictWithReason = (
   schedule1: TimeSchedule[],
   schedule2: TimeSchedule[]
 ): { hasConflict: boolean; reason?: string } => {
-  for (let slot1 of schedule1) {
-    for (let slot2 of schedule2) {
+  for (const slot1 of schedule1) {
+    for (const slot2 of schedule2) {
       if (slot1.day === slot2.day) {
         // Convert times to minutes for proper numerical comparison
         const start1 = timeToMinutes(slot1.timeStart);
@@ -226,7 +226,7 @@ const rankScheduleQuality = (
   let totalTimeInSchool = 0; // Track total time from first to last class each day
   let mixPatternScore = 0; // Score for mixed pattern of class types
 
-  Object.entries(classesByDay).forEach(([day, classes]) => {
+  Object.entries(classesByDay).forEach(([, classes]) => {
     if (classes.length > 0) {
       dayWithClasses++;
       daySpread++;
@@ -486,7 +486,6 @@ const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
     });
 
     // Try all sections for this course - important to try every section
-    let sectionsAdded = 0;
 
     // Iterate through the sorted sections
     for (const section of sortedSections) {
@@ -507,8 +506,6 @@ const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
       if (!hasConflict) {
         // Try this section
         buildSchedule(currentIdx + 1, [...currentSchedule, section]);
-        sectionsAdded++;
-
         // If we've found enough schedules, stop trying more sections
         if (allSchedules.length >= MAX_VARIANTS) break;
       }
@@ -714,7 +711,7 @@ const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
 };
 
 // Generate a consistent color for a course across multiple schedules
-const generateColor = (title: string, type: string) => {
+const generateColor = (title: string) => {
   const colors = [
     "bg-red-500",
     "bg-blue-500",
@@ -762,9 +759,9 @@ const createScheduleGrid = (
     const courseColorMap: { [key: string]: { [type: string]: string } } = {};
     uniqueCourses.forEach((title) => {
       courseColorMap[title] = {
-        Theory: generateColor(title, "Theory"),
-        Lab: generateColor(title, "Lab"),
-        default: generateColor(title, "Theory"),
+        Theory: generateColor(title),
+        Lab: generateColor(title),
+        default: generateColor(title),
       };
     });
 
@@ -1145,7 +1142,7 @@ const CourseConflictAnalysis = ({
 
   // Count total conflicts
   const totalConflicts = Object.entries(conflictMatrix).reduce(
-    (count, [_, conflicts]) => count + Object.keys(conflicts).length,
+    (count, [, conflicts]) => count + Object.keys(conflicts).length,
     0
   );
 
@@ -1406,7 +1403,7 @@ const CourseScheduler = ({
     const ranking = rankScheduleQuality(selectedVariant); // Pass the total courses
 
     // Create explanation text
-    let explanation = [];
+    const explanation = [];
 
     // Course coverage
     const coursePercent = Math.round(

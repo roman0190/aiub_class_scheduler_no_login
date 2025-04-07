@@ -45,11 +45,12 @@ export default function Login() {
     try {
       const res = await login(userId, password);
       const userData = res.data;
-      if (userData.Schedule.length === 0) {
+      if (userData?.schedule.length === 0) {
         setError("Invalid User ID or Password");
         return;
       }
-    } catch (err) {
+    } catch (error) {
+      console.error("Login error:", error);
       setError("Failed to login. Please try again.");
     }
   };

@@ -49,15 +49,15 @@ export async function POST(request: Request) {
 
     // Get the URL from environment variable only
     const url = process.env.AIUB_PORTAL_URL;
-    
+
     // Ensure URL is available
     if (!url) {
       return new Response(
-      JSON.stringify({ error: "Portal URL is not configured" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+        JSON.stringify({ error: "Portal URL is not configured" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
       );
     }
 

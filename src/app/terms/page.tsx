@@ -63,7 +63,7 @@ export default function TermsAndPolicy() {
               Privacy Policy
             </h2>
             <p className="mb-3 text-gray-700">
-              We take your privacy seriously. Here's how we handle your
+              We take your privacy seriously. Here&apos;s how we handle your
               information:
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">

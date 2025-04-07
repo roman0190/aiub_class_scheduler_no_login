@@ -4,14 +4,20 @@ import axios from "axios";
 import localForage from "localforage";
 import { useRouter } from "next/navigation";
 
+interface ResponseData {
+  name: string;
+  schedule: TimeSchedule[][];
+  courses: Course[];
+}
+
 interface AuthContextType {
-  data: any; // Consider typing this more specifically based on your data structure
+  data: ResponseData | null;
   loading: boolean;
   error: string | null;
   login: (
     username: string,
     password: string
-  ) => Promise<{ success: boolean; data?: any; error?: string }>;
+  ) => Promise<{ success: boolean; data?: ResponseData; error?: string }>;
   logout: () => Promise<void>;
   credentials: {
     username: string | null;
@@ -23,7 +29,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ResponseData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [credentials, setCredentials] = useState<{
@@ -39,7 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const userData = await localForage.getItem("userData");
+        const userData = await localForage.getItem<ResponseData | null>(
+          "userData"
+        );
         const storedUsername = localStorage.getItem("aiubUsername");
         const storedPassword = localStorage.getItem("aiubPassword");
 
@@ -68,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
-      const response = await axios.post("/api/aiub-scraper", {
+      const response = await axios.post<ResponseData>("/api/aiub-scraper", {
         username,
         password,
       });
@@ -92,8 +100,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error("No data received");
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error && (err as any).response?.data?.error
-          ? (err as any).response.data.error
+        axios.isAxiosError(err) && err.response?.data?.error
+          ? err.response.data.error
           : err instanceof Error
           ? err.message
           : "Login failed. Please check your credentials.";
