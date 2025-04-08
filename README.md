@@ -22,3 +22,7 @@ AIUB Scheduler helps students of American International University – Banglades
 	•	Styling: Tailwind CSS, DaisyUI
 	•	Animations: Framer Motion
 	•	Data Fetching: Axios
+    	•	State Management: Context API
+
+
+
