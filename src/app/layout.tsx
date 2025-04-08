@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import RouteWrapper from "../wrapper/RouteWrapper";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,7 +32,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <RouteWrapper>{children}</RouteWrapper>
+          <RouteWrapper>
+            <main className="min-h-screen">{children}</main>
+          </RouteWrapper>
         </AuthProvider>
       </body>
     </html>

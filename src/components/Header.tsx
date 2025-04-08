@@ -4,12 +4,15 @@ import React, { useState } from "react";
 import { LogOut, RefreshCcw, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
+import Link from "next/link";
+
 
 const Header = () => {
   const { logout, data, login, credentials, loading } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshSuccess, setRefreshSuccess] = useState(false);
   const name = data?.name;
+ 
 
   const handleLogout = async () => {
     try {
@@ -93,16 +96,17 @@ const Header = () => {
     }
   };
 
-
   return (
     <header className="flex flex-col sm:flex-row justify-between items-center bg-white shadow-md p-4 gap-3">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-3">
-          <img
-            src="/logo.png"
-            alt="AIUB Logo"
-            className="h-16 w-auto object-fill"
-          />
+          <Link href="/aiub">
+            <img
+              src="/logo.png"
+              alt="AIUB Logo"
+              className="h-16 w-auto object-fill cursor-pointer"
+            />
+          </Link>
           <span className="text-[#003366] text-sm lg:text-[16px] font-medium">
             Hi, <span className="font-bold">{name}</span>
             <button
@@ -132,12 +136,15 @@ const Header = () => {
             </button>
           </span>
         </div>
-        <button
-          onClick={handleLogout}
-          className="bg-[#003366] text-white flex items-center gap-2 px-4 py-2 rounded-md hover:bg-[#002244] transition duration-300 text-sm lg:text-base"
-        >
-          <LogOut size={18} /> <span className="hidden sm:block">Logout</span>
-        </button>
+        <div className="flex items-center gap-2">
+          
+          <button
+            onClick={handleLogout}
+            className="bg-[#003366] text-white flex items-center gap-2 px-4 py-2 rounded-md hover:bg-[#002244] transition duration-300 text-sm lg:text-base"
+          >
+            <LogOut size={18} /> <span className="hidden sm:block">Logout</span>
+          </button>
+        </div>
       </div>
     </header>
   );
