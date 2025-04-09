@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
 import RouteWrapper from "../wrapper/RouteWrapper";
+import { Analytics } from '@vercel/analytics/next';
 
 
 const geistSans = Geist({
@@ -33,7 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <RouteWrapper>
-            <main className="min-h-screen">{children}</main>
+            <main className="min-h-screen">{children}<Analytics /></main>
           </RouteWrapper>
         </AuthProvider>
       </body>
