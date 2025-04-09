@@ -11,7 +11,7 @@ const Home = () => {
 
   // debugger;
   return (
-    <div className="min-h-screen relative bg-[#f0f8ff] p-3 md:p-6">
+    <div className="min-h-screen relative bg-[#f0f8ff] ">
       {/* Main Content */}
       <main className="flex justify-center">
         <Autocomplete courses={courses} />

@@ -74,7 +74,7 @@ const Header = () => {
         setRefreshSuccess(true);
         setTimeout(() => setRefreshSuccess(false), 2000);
       } else {
-        throw new Error(result.error || "Unknown error occurred");
+        throw new Error("Unknown error occurred");
       }
     } catch (error) {
       console.error("Data refresh failed:", error);
@@ -94,11 +94,11 @@ const Header = () => {
       setIsRefreshing(false);
     }
   };
- 
+
   const adminUsername = process.env.NEXT_PUBLIC_ADMIN;
-  
+
   return (
-    <header className=" sticky top-0 left-0 z-10 flex flex-col sm:flex-row justify-between items-center bg-white shadow-md p-4 gap-3">
+    <header className=" sticky lg:px-44 top-0 left-0 z-10 flex flex-col sm:flex-row justify-between items-center bg-white shadow-md pr-2  gap-3">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-3">
           <Link href="/aiub">

@@ -1555,19 +1555,18 @@ const CourseScheduler = ({
   }, [selectedCourses]);
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 text-black">
-      <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4 sm:mb-6">
-        Available Course Schedules
-      </h1>
-
+    <div className=" py-4 sm:py-6 text-black">
       {/* Create Schedule Button */}
       <button
         onClick={handleCreateSchedule}
-        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-4 sm:mb-6 mx-auto block shadow-md transition duration-300 transform hover:scale-105 w-full sm:w-auto"
+        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-4 sm:mb-6 mx-auto block shadow-md transition duration-300 transform hover:scale-105"
         disabled={isButtonDisabled}
       >
         {buttonText}
       </button>
+      <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4 sm:mb-6">
+        Course Schedules
+      </h1>
 
       {/* Progress bar */}
       {loading && (

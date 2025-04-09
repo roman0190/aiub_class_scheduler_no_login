@@ -8,7 +8,7 @@ export default function AiubLayout({ children }: AiubLayoutProps) {
   return (
     <div className=" relative">
       <Header />
-      {children}
+      <div className="lg:px-40 bg-[#f0f8ff]">{children}</div>
     </div>
   );
 }
