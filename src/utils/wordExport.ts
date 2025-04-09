@@ -92,7 +92,15 @@ export const exportToWord = async (
   variantIdx: number
 ) => {
   // Group courses by day
-  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const coursesByDay: Record<
     string,
     Array<{

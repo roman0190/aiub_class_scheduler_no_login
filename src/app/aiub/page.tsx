@@ -5,7 +5,6 @@ import Autocomplete from "@/components/Autocomplete";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 const Home = () => {
-
   const { data } = useAuth();
 
   const courses = data?.courses || [];

@@ -6,14 +6,13 @@ import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
 import Link from "next/link";
 
-
 const Header = () => {
   const { logout, data, login, credentials, loading } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshSuccess, setRefreshSuccess] = useState(false);
   const name = data?.name;
- 
 
+  const storedUsername = localStorage.getItem("aiubUsername");
   const handleLogout = async () => {
     try {
       await logout();
@@ -54,7 +53,7 @@ const Header = () => {
     });
 
     try {
-      console.log("Attempting refresh with:", credentials.username);
+      // console.log("Attempting refresh with:", credentials.username);
       const result = await login(credentials.username, credentials.password);
 
       // Close the loading dialog
@@ -95,7 +94,9 @@ const Header = () => {
       setIsRefreshing(false);
     }
   };
-
+ 
+  const adminUsername = process.env.NEXT_PUBLIC_ADMIN;
+  
   return (
     <header className=" sticky top-0 left-0 z-10 flex flex-col sm:flex-row justify-between items-center bg-white shadow-md p-4 gap-3">
       <div className="flex items-center w-full justify-between">
@@ -108,7 +109,11 @@ const Header = () => {
             />
           </Link>
           <span className="text-[#003366] text-sm lg:text-[16px] font-medium">
-            Hi, <span className="font-bold">{name}</span>
+            Hi,{" "}
+            <span className="font-bold">
+              {storedUsername == adminUsername ? "Admin" : name}
+              <span className="text-[10px]">({storedUsername})</span>
+            </span>
             <button
               onClick={handleRefresh}
               disabled={isRefreshing || loading}
@@ -137,7 +142,6 @@ const Header = () => {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          
           <button
             onClick={handleLogout}
             className="bg-[#003366] text-white flex items-center gap-2 px-4 py-2 rounded-md hover:bg-[#002244] transition duration-300 text-sm lg:text-base"

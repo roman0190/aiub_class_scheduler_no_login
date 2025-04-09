@@ -9,6 +9,8 @@ const RouteWrapper = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
+  
+
   useEffect(() => {
     const checkAuth = async () => {
       if (typeof window !== "undefined") {
