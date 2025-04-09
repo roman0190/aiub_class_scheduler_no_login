@@ -749,7 +749,15 @@ const createScheduleGrid = (
   selectedCourses: { [key: string]: Course[] }
 ) => {
   // Make sure we include all days Sunday through Thursday consistently
-  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   return validVariants.map((variant, variantIdx) => {
     // Group courses by title to count unique courses
@@ -965,6 +973,7 @@ const createScheduleGrid = (
 
                         // Calculate percentage if both values are available and numeric
                         let percentText = "";
+                        let empty = "";
                         if (count !== "N/A" && capacity !== "N/A") {
                           try {
                             const countNum = parseInt(count.toString());
@@ -973,6 +982,7 @@ const createScheduleGrid = (
                               (countNum / capacityNum) * 100
                             );
                             percentText = ` (${fillPercentage}%)`;
+                            empty = `(${capacityNum - countNum})`;
                           } catch (e) {
                             console.error("Error calculating percentage:", e);
                           }
@@ -1008,14 +1018,18 @@ const createScheduleGrid = (
                                     </span>
                                     <span>
                                       {count}
-                                      {percentText}
+                                      {empty}
                                     </span>
                                   </div>
                                   <div className="flex flex-wrap items-center">
                                     <span className="font-medium mr-1">
                                       Capacity:
                                     </span>
-                                    <span>{capacity}</span>
+
+                                    <span>
+                                      {capacity}
+                                      {percentText}
+                                    </span>
                                   </div>
                                 </div>
                               </div>

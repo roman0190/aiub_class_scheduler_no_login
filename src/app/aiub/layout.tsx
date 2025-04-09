@@ -6,9 +6,9 @@ interface AiubLayoutProps {
 
 export default function AiubLayout({ children }: AiubLayoutProps) {
   return (
-    <>
+    <div className=" relative">
       <Header />
       {children}
-    </>
+    </div>
   );
 }

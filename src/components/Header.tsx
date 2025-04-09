@@ -97,7 +97,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex flex-col sm:flex-row justify-between items-center bg-white shadow-md p-4 gap-3">
+    <header className=" sticky top-0 left-0 z-10 flex flex-col sm:flex-row justify-between items-center bg-white shadow-md p-4 gap-3">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-3">
           <Link href="/aiub">
