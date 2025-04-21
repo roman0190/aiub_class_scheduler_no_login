@@ -82,6 +82,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (response.data) {
+        // Check if the schedule array is valid
+        if (!response.data.schedule || response.data.schedule.length === 0) {
+          throw new Error("Invalid User ID or Password");
+        }
+
         setData(response.data);
         await localForage.setItem("userData", response.data);
         await localForage.setItem("isAuthenticated", "true");

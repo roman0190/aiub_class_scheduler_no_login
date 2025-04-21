@@ -48,11 +48,26 @@ const createStyledParagraph = (
   });
 };
 
+// Create a styled paragraph for notes
+const createNoteParagraph = (text: string) => {
+  return new Paragraph({
+    children: [
+      new TextRun({
+        text,
+        italics: true,
+        size: 24,
+        color: "FF0000", // Red color for emphasis
+      }),
+    ],
+    spacing: { after: 300 },
+  });
+};
+
 // Create header cell with styling
 const createHeaderCell = (text: string) => {
   return new TableCell({
     width: {
-      size: 100 / 3,
+      size: 100 / 4, // Adjusted for 4 columns
       type: WidthType.PERCENTAGE,
     },
     shading: {
@@ -71,11 +86,11 @@ const createHeaderCell = (text: string) => {
   });
 };
 
-// Create a data cell with styling
+// Create a data cell with styling (updated to handle multiple lines)
 const createDataCell = (text: string) => {
   return new TableCell({
     width: {
-      size: 100 / 3,
+      size: 100 / 4, // Adjusted for 4 columns
       type: WidthType.PERCENTAGE,
     },
     children: [
@@ -108,6 +123,8 @@ export const exportToWord = async (
       type: string;
       time: string;
       room: string;
+      count?: string;
+      capacity?: string;
     }>
   > = {};
 
@@ -124,6 +141,8 @@ export const exportToWord = async (
         type: slot.type || "Theory",
         time: `${slot.timeStart} - ${slot.timeEnd}`,
         room: slot.room,
+        count: course.count,
+        capacity: course.capacity,
       });
     });
   });
@@ -148,6 +167,11 @@ export const exportToWord = async (
       {
         properties: {},
         children: [
+          // Note
+          createNoteParagraph(
+            "Note: Please verify this schedule with the official AIUB website for accuracy."
+          ),
+
           // Title
           new Paragraph({
             heading: HeadingLevel.TITLE,
@@ -156,6 +180,13 @@ export const exportToWord = async (
                 text: `Course Schedule Option ${variantIdx + 1}`,
                 bold: true,
                 size: 36,
+              }),
+              new TextRun({
+                text: " (Visit: https://aiub-class-scheduler.vercel.app/)",
+                italics: true,
+                size: 24,
+                color: "0000FF", // Blue color for link
+                underline: {},
               }),
             ],
             spacing: { after: 300 },
@@ -209,12 +240,13 @@ export const exportToWord = async (
                 insideVertical: { style: BorderStyle.SINGLE, size: 1 },
               },
               rows: [
-                // Header row
+                // Header row (updated for count and capacity)
                 new TableRow({
                   children: [
                     createHeaderCell("Course"),
                     createHeaderCell("Time"),
                     createHeaderCell("Room"),
+                    createHeaderCell("Enrollment (Count/Capacity)"),
                   ],
                 }),
                 // Data rows
@@ -225,6 +257,11 @@ export const exportToWord = async (
                         createDataCell(`${course.title} (${course.type})`),
                         createDataCell(formatTimeDisplay(course.time)),
                         createDataCell(course.room),
+                        createDataCell(
+                          `${course.count || "N/A"} / ${
+                            course.capacity || "N/A"
+                          }`
+                        ),
                       ],
                     })
                 ),

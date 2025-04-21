@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import localForage from "localforage";
 
 export default function Login() {
   const { login, loading } = useAuth();
@@ -44,9 +45,9 @@ export default function Login() {
     setError("");
     try {
       const res = await login(userId, password);
-      const userData = res.data;
-      if (userData?.schedule.length === 0) {
-        setError("Invalid User ID or Password");
+      if (!res.success) {
+        setError(res.error || "Invalid User ID or Password");
+        await localForage.setItem("isAuthenticated", "false");
         return;
       }
     } catch (error) {
