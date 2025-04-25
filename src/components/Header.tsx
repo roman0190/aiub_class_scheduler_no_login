@@ -101,12 +101,13 @@ const Header = () => {
     <header className=" sticky lg:px-44 top-0 left-0 z-10 flex flex-col sm:flex-row justify-between items-center bg-white shadow-md pr-2  gap-3">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/aiub">
+          <Link href="/aiub" className=" relative">
             <img
               src="/logo.png"
               alt="AIUB Logo"
               className="h-16 w-auto object-fill cursor-pointer"
             />
+            <strong className=" absolute bottom-0 right-0 text-blue-700 text-[10px]">(Beta 1.1.0)</strong>
           </Link>
           <span className="text-[#003366] text-sm lg:text-[16px] font-medium">
             Hi,{" "}

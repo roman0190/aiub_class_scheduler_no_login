@@ -20,11 +20,25 @@ export default function Login() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [showAbout, setShowAbout] = useState(true); // Changed to true to show by default for first-time users
-  const [firstVisit, setFirstVisit] = useState(true);
+  const [showAbout, setShowAbout] = useState(false);
+  const [firstVisit, setFirstVisit] = useState(false);
 
   useEffect(() => {
-    // Hide about section after 10 seconds for first-time users
+    const checkFirstVisit = async () => {
+      const hasVisited = await localForage.getItem("hasVisited");
+      if (!hasVisited) {
+        setShowAbout(true);
+        setFirstVisit(true);
+        await localForage.setItem("hasVisited", true);
+      } else {
+        setShowAbout(false);
+        setFirstVisit(false);
+      }
+    };
+    checkFirstVisit();
+  }, []);
+
+  useEffect(() => {
     if (firstVisit) {
       const timer = setTimeout(() => {
         setShowAbout(false);
