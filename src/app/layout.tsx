@@ -16,10 +16,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: " AIUB Class Scheduler | Smart Class Routine Generator",
+  title: "AIUB Class Scheduler | Smart Class Routine Generator",
   description:
     "Log in to AIUB Scheduler to generate clash-free, optimized class routines by selecting your preferred open credit courses. Built exclusively for AIUB students.",
+  keywords: [
+    "AIUB",
+    "Class Scheduler",
+    "Smart Routine Generator",
+    "AIUB Scheduler",
+  ],
+  openGraph: {
+    title: "AIUB Class Scheduler",
+    description: "Smart Class Routine Generator for AIUB students.",
+    url: "https://www.aiubclassscheduler.me/",
+    siteName: "AIUB class Scheduler",
+    type: "website",
+    images: [
+      {
+        url: "https://www.aiubclassscheduler.me/_next/image?url=%2Flogo.png&w=256&q=75",
+        width: 800,
+        height: 600,
+        alt: "AIUB Class Scheduler",
+      },
+    ],
+  },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
