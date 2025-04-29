@@ -182,7 +182,7 @@ export const exportToWord = async (
                 size: 36,
               }),
               new TextRun({
-                text: " (Visit: https://aiub-class-scheduler.vercel.app/)",
+                text: " (Visit: https://www.aiubclassscheduler.me/  OR  https://aiub-class-scheduler-no-login.vercel.app/)",
                 italics: true,
                 size: 24,
                 color: "0000FF", // Blue color for link

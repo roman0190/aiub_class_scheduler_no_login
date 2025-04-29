@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 
 const Header = () => {
   const pathname = usePathname();
-  const isDocsPage = pathname === "/doc";
+  const isDocsPage = pathname === "/about";
 
   return (
-    <header className=" sticky top-0 flex justify-between items-center p-4 bg-gray-100 border-b border-gray-300 z-10">
+    <header className=" sticky lg:px-[10rem] top-0 flex justify-between items-center p-4 bg-gray-100 border-b border-gray-300 z-10">
       {/* Logo on the left */}
       <div className="text-xl font-bold text-gray-800 h-[50px] flex items-center justify-center">
         <Image
@@ -24,8 +24,8 @@ const Header = () => {
       {/* "How to Use It" text on the right */}
       {!isDocsPage ? (
         <div>
-          <Link href="/doc" className="text-blue-500 hover:underline">
-            How to Use It?
+          <Link href="/about" className="text-blue-500 hover:underline">
+            About
           </Link>
         </div>
       ) : (

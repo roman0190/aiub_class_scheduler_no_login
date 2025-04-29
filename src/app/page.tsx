@@ -76,7 +76,7 @@ const Home = () => {
             className="hidden"
           />
         </label>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-gray-600 px-2 text-center">
           Note: Download the .xlsx file from &quot;Offered Courses&quot; and upload it
           here. Do not reload the page — reloading will require you to upload
           the file again.{" "}
