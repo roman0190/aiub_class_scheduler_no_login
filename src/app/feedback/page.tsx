@@ -1,16 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import Header from "@/components/Header";
 import { Star, Send } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
 export default function FeedbackPage() {
-  const { data } = useAuth();
-  const userName = data?.name || "";
   const router = useRouter();
-  
+  const [name, setName] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
@@ -18,7 +15,7 @@ export default function FeedbackPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (rating === 0) {
       Swal.fire({
         title: "Rating Required",
@@ -28,9 +25,9 @@ export default function FeedbackPage() {
       });
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch("/api/feedback", {
         method: "POST",
@@ -38,12 +35,12 @@ export default function FeedbackPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: userName,
+          name,
           rating,
           message,
         }),
       });
-      
+
       if (response.ok) {
         Swal.fire({
           title: "Thank you!",
@@ -51,7 +48,7 @@ export default function FeedbackPage() {
           icon: "success",
           confirmButtonColor: "#003366",
         }).then(() => {
-          router.push("/aiub");
+          router.push("/");
         });
       } else {
         throw new Error("Failed to submit feedback");
@@ -71,13 +68,12 @@ export default function FeedbackPage() {
 
   return (
     <div className="min-h-screen bg-[#f0f8ff] text-blue-950">
-      <Header />
       <div className="container mx-auto max-w-2xl p-6">
         <div className="bg-white shadow-md rounded-lg p-6 mt-8">
           <h1 className="text-2xl font-bold text-[#003366] mb-6 text-center">
             We Value Your Feedback
           </h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -85,12 +81,14 @@ export default function FeedbackPage() {
               </label>
               <input
                 type="text"
-                value={userName}
-                disabled
-                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600"
+                value={name}
+                placeholder="Enter your name"
+                required
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900"
               />
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Rating
@@ -103,17 +101,25 @@ export default function FeedbackPage() {
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoveredRating(star)}
                     onMouseLeave={() => setHoveredRating(0)}
-                    fill={star <= (hoveredRating || rating) ? "#FFD700" : "transparent"}
-                    stroke={star <= (hoveredRating || rating) ? "#FFD700" : "#6B7280"}
+                    fill={
+                      star <= (hoveredRating || rating)
+                        ? "#FFD700"
+                        : "transparent"
+                    }
+                    stroke={
+                      star <= (hoveredRating || rating) ? "#FFD700" : "#6B7280"
+                    }
                     className="cursor-pointer transition-all"
                   />
                 ))}
               </div>
               <p className="text-center text-sm text-gray-500 mt-1">
-                {rating > 0 ? `You rated: ${rating} star${rating > 1 ? 's' : ''}` : 'Select a rating'}
+                {rating > 0
+                  ? `You rated: ${rating} star${rating > 1 ? "s" : ""}`
+                  : "Select a rating"}
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Your Feedback
@@ -127,13 +133,15 @@ export default function FeedbackPage() {
                 required
               />
             </div>
-            
+
             <button
               type="submit"
               disabled={isSubmitting || rating === 0}
               className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#003366] text-white rounded-md hover:bg-[#002244] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Submitting..." : (
+              {isSubmitting ? (
+                "Submitting..."
+              ) : (
                 <>
                   <Send size={18} />
                   Submit Feedback

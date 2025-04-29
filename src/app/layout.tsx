@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "../context/AuthContext";
-import RouteWrapper from "../wrapper/RouteWrapper";
-import { Analytics } from '@vercel/analytics/next';
-
+import React from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +20,6 @@ export const metadata: Metadata = {
   description:
     "Log in to AIUB Scheduler to generate clash-free, optimized class routines by selecting your preferred open credit courses. Built exclusively for AIUB students.",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,11 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <RouteWrapper>
-            <main className="min-h-screen">{children}<Analytics /></main>
-          </RouteWrapper>
-        </AuthProvider>
+        <Header />
+        <main className="lg:px-40 bg-[#f0f8ff]">{children}</main>
+        <Footer />
       </body>
     </html>
   );
