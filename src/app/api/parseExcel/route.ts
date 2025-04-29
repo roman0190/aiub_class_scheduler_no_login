@@ -2,6 +2,40 @@ import * as xlsx from "xlsx";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
+// Define types for the Excel row and course structure
+type ExcelRow = [
+  string, // classId
+  unknown, // Unused column
+  string, // status
+  number, // capacity
+  number, // count
+  string, // title
+  unknown, // Unused column
+  unknown, // Unused column
+  string, // type
+  string, // day
+  string, // timeStart
+  string, // timeEnd
+  string // room
+];
+
+type Schedule = {
+  type: string;
+  day: string;
+  timeStart: string;
+  timeEnd: string;
+  room: string;
+};
+
+type Course = {
+  classId: string;
+  title: string;
+  status: string;
+  capacity: number;
+  count: number;
+  schedule: Schedule[];
+};
+
 // Function to handle POST request and file parsing
 export async function POST(request: NextRequest) {
   try {
@@ -40,7 +74,7 @@ export async function POST(request: NextRequest) {
     const worksheet = workbook.Sheets[sheetName];
 
     // Convert the sheet to JSON format (each row will be an array)
-    const data = xlsx.utils.sheet_to_json<any[]>(worksheet, { header: 1 });
+    const data = xlsx.utils.sheet_to_json<ExcelRow[]>(worksheet, { header: 1 });
 
     // Add error handling for empty data
     if (data.length <= 1) {
@@ -55,12 +89,12 @@ export async function POST(request: NextRequest) {
 
     // Process each row of data into the required format
     for (let i = 1; i < data.length; i++) {
-      const row: any[] = data[i];
+      const row: ExcelRow = data[i] as ExcelRow;
       if (!row[0]) continue; // Skip empty rows
 
-      const classId = row[0];//id
+      const classId = row[0]; // id
       const title = row[5]; // Course Title
-      const status = row[2]; //status
+      const status = row[2]; // status
       const capacity = row[3]; // Capacity
       const count = row[4]; // Count
 

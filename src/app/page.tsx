@@ -77,7 +77,7 @@ const Home = () => {
           />
         </label>
         <p className="mt-2 text-sm text-gray-600">
-          Note: Download the .xlsx file from "Offered Courses" and upload it
+          Note: Download the .xlsx file from &quot;Offered Courses&quot; and upload it
           here. Do not reload the page — reloading will require you to upload
           the file again.{" "}
           <Link href="/doc" className="text-blue-500 hover:underline">
