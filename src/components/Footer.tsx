@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="text-center p-4 bg-gray-100">
       <p className="text-gray-700">
-        &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+        &copy; {new Date().getFullYear()} AIUB CLASS SCHEDULER. All rights reserved.
       </p>
       <p className="text-gray-700">
         Developed by{" "}
