@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import Swal from "sweetalert2";
 
 // Convert time string to numerical value for easier comparison
 const timeToMinutes = (time: string): number => {
@@ -1271,6 +1272,12 @@ const CourseScheduler = ({
         setValidVariants(validCombinations);
         setLoading(false);
         setProgress(100);
+        Swal.fire({
+          title: "Success!",
+          text: "Schedule created successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       } catch (error) {
         console.error("Error creating schedule:", error);
         setLoading(false);
