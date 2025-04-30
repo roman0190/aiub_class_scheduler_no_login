@@ -77,9 +77,9 @@ const Home = () => {
           />
         </label>
         <p className="mt-2 text-sm text-gray-600 px-2 text-center">
-          Note: Download the .xlsx file from &quot;Offered Courses&quot; and upload it
-          here. Do not reload the page — reloading will require you to upload
-          the file again.{" "}
+          Note: Download the .xlsx file from &quot;Offered Courses&quot; and
+          upload it here. Do not reload the page — reloading will require you to
+          upload the file again.{" "}
           <Link href="/doc" className="text-blue-500 hover:underline">
             See more here.
           </Link>
@@ -105,7 +105,6 @@ const Home = () => {
       <main className="flex justify-center">
         <Autocomplete courses={courses} />
       </main>
-
       <Link
         href="/feedback"
         className={`fixed bottom-2 right-1 flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors bg-green-400/75 text-blue-950 shadow-2xl z-10`}

@@ -3,10 +3,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link"; // Updated import
 import { usePathname } from "next/navigation";
+import { FaArrowLeft, FaInfoCircle } from "react-icons/fa"; // updated import
 
 const Header = () => {
   const pathname = usePathname();
-  const isDocsPage = pathname === "/about";
+  const isDocsPage = pathname === "/about" || pathname === "/doc";
 
   return (
     <header className=" sticky lg:px-[10rem] top-0 flex justify-between items-center p-4 bg-gray-100 border-b border-gray-300 z-10">
@@ -25,12 +26,14 @@ const Header = () => {
       {!isDocsPage ? (
         <div>
           <Link href="/about" className="text-blue-500 hover:underline">
-            About
+            <FaInfoCircle />
           </Link>
         </div>
       ) : (
         <div className="text-blue-500 hover:underline">
-          <Link href="/">Go Back</Link>
+          <Link href="/">
+            <FaArrowLeft />
+          </Link>
         </div>
       )}
     </header>
