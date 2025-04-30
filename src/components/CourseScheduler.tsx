@@ -343,8 +343,17 @@ const rankScheduleQuality = (
 
 // Enhanced version of the scheduler that generates multiple variants (up to 20)
 const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
-  const MAX_VARIANTS = 20; // Maximum number of schedule variants to generate
-  const MAX_KEPT_VARIANTS = 20; // Number of final best schedules to keep (increased from 8)
+  const MAX_VARIANTS = 5; // changed from 60 to 20
+  const MAX_KEPT_VARIANTS = 5; // changed from 60 to 20
+
+  // Add a helper function to shuffle arrays for randomization
+  function shuffle<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   // Pre-calculate section conflicts
   const conflictCache: Record<string, Record<string, boolean>> = {};
@@ -474,21 +483,11 @@ const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
       });
     });
 
-    // Sort sections to prioritize those that create a better mix pattern
-    // This means different types on different days, or alternating types on the same day
-    const sortedSections = [...sections].sort((a, b) => {
-      // Calculate mix score for each section
-      const sectionAScore = calculateSectionMixScore(a, existingClassesByDay);
-      const sectionBScore = calculateSectionMixScore(b, existingClassesByDay);
+    // Replace deterministic sort with random shuffling for diversity
+    const shuffledSections = shuffle([...sections]);
 
-      // Higher score is better
-      return sectionBScore - sectionAScore;
-    });
-
-    // Try all sections for this course - important to try every section
-
-    // Iterate through the sorted sections
-    for (const section of sortedSections) {
+    // Iterate through the shuffled sections
+    for (const section of shuffledSections) {
       // Check if this section conflicts with any current ones
       let hasConflict = false;
 
@@ -516,43 +515,6 @@ const getValidCourseVariants = (courses: { [key: string]: Course[] }) => {
       buildSchedule(currentIdx + 1, currentSchedule);
     }
   };
-
-  // Helper function to score sections based on how well they mix with existing schedule
-  function calculateSectionMixScore(
-    section: Course,
-    existingClassesByDay: Record<string, { type: string; count: number }[]>
-  ): number {
-    let score = 0;
-
-    section.schedule.forEach((slot) => {
-      const day = slot.day;
-      const type = slot.type || "Theory";
-
-      const existingTypesOnDay = existingClassesByDay[day];
-
-      // If there are no classes on this day yet, this is neutral
-      if (existingTypesOnDay.length === 0) {
-        score += 5;
-      }
-      // If there are only classes of the same type, adding a different type is good
-      else if (!existingTypesOnDay.some((item) => item.type === type)) {
-        score += 10; // Encourage different types on the same day
-      }
-      // If there's already alternating pattern, try to maintain it
-      else if (
-        existingTypesOnDay.length >= 2 &&
-        existingTypesOnDay.some((item) => item.type !== type)
-      ) {
-        score += 8;
-      }
-      // If adding more of the same type that already exists, less preferable
-      else {
-        score += 2;
-      }
-    });
-
-    return score;
-  }
 
   const daysOfWeek = [
     "Sunday",
@@ -1273,11 +1235,6 @@ const CourseScheduler = ({
   const [scheduledCourses, setScheduledCourses] = useState<{
     [key: string]: Course[];
   }>({});
-  // Add cache for generated schedules
-  const [scheduleCache, setScheduleCache] = useState<{
-    [key: string]: CourseInSchedule[][];
-  }>({});
-
   // Add state for AI selection and explanation
   const [aiSelectedIndex, setAiSelectedIndex] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -1299,46 +1256,18 @@ const CourseScheduler = ({
     [selectedCourses, scheduledCourses, scheduleCreated]
   );
 
-  // Use useCallback to memoize the handleCreateSchedule function
+  // Modify the handleCreateSchedule function to always regenerate new variants (no caching)
   const handleCreateSchedule = useCallback(() => {
     setLoading(true);
     setProgress(0);
     setScheduleCreated(true);
     setScheduledCourses(selectedCourses);
-
-    // Generate a cache key based on selected courses
-    const cacheKey = Object.keys(selectedCourses)
-      .map(
-        (title) =>
-          `${title}-${selectedCourses[title].map((c) => c.classId).join(",")}`
-      )
-      .join("|");
-
-    // Check if we have this calculation cached
-    if (scheduleCache[cacheKey]) {
-      setValidVariants(scheduleCache[cacheKey]);
-      setLoading(false);
-      setProgress(100);
-      return;
-    }
-
-    // Use requestAnimationFrame to not block the UI
+    // Removed cache check to force new generation each time
     requestAnimationFrame(() => {
       try {
         setProgress(30);
-
-        // Calculate valid combinations - just get one good option
         const validCombinations = getValidCourseVariants(selectedCourses);
-
         setProgress(90);
-
-        // Save to cache
-        setScheduleCache((prev) => ({
-          ...prev,
-          [cacheKey]: validCombinations,
-        }));
-
-        // Update state with all results at once
         setValidVariants(validCombinations);
         setLoading(false);
         setProgress(100);
@@ -1348,7 +1277,7 @@ const CourseScheduler = ({
         setProgress(0);
       }
     });
-  }, [selectedCourses, scheduleCache]);
+  }, [selectedCourses]);
 
   // Memoize the button disable condition
   const isButtonDisabled = useMemo(
@@ -1559,11 +1488,25 @@ const CourseScheduler = ({
       {/* Create Schedule Button */}
       <button
         onClick={handleCreateSchedule}
-        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-4 sm:mb-6 mx-auto block shadow-md transition duration-300 transform hover:scale-105"
+        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-2 sm:mb-4 mx-auto block shadow-md transition duration-300 transform hover:scale-105"
         disabled={isButtonDisabled}
       >
         {buttonText}
       </button>
+
+      {/* New button to regenerate different combinations */}
+      {scheduleCreated && !loading && (
+        <div className="mb-4 text-center">
+          <button
+            onClick={handleCreateSchedule}
+            className="flex items-center justify-center text-blue-600 hover:text-blue-800 font-medium"
+          >
+            <span className="mr-2">↻</span>
+            Click here to create more different combination
+          </button>
+        </div>
+      )}
+
       <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-4 sm:mb-6">
         Course Schedules
       </h1>
@@ -1589,7 +1532,7 @@ const CourseScheduler = ({
       {validVariants.length > 0 && !loading && (
         <p className="text-center mb-4">
           Found {validVariants.length} possible schedule combinations (out of
-          max 20)
+          max 5)
         </p>
       )}
 

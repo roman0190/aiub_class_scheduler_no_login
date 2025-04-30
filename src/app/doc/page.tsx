@@ -28,12 +28,21 @@ const steps = [
     image: "/images/step6.png",
   },
   {
+    step: "Click here to create more different combination",
+    image: "/images/step7_new.png",
+  },
+  {
     step: "Export your routine if needed!",
     image: "/images/step7.png",
   },
   {
     step: "Provide feedback through the feedback form.",
     image: "/images/step8.png",
+  },
+  {
+    step: "Join our Discord community for support and updates.",
+    image: "/images/discord.png",
+    link: "https://discord.com/invite/jstr5NW6",
   },
 ];
 
