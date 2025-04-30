@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AIUB Class Scheduler | Smart Class Routine Generator",
   description:
-    "Log in to AIUB Scheduler to generate clash-free, optimized class routines by selecting your preferred open credit courses. Built exclusively for AIUB students.",
+    "Easily generate clash-free, optimized class schedules for AIUB Open Credit students by simply uploading your offered course file—no login required. Fast, secure, and student-friendly.",
   keywords: [
     "AIUB",
     "Class Scheduler",
