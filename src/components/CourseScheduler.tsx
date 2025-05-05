@@ -832,23 +832,23 @@ const createScheduleGrid = (
       }
     });
 
-    // Function to export the selected schedule to Word
-    const exportScheduleToWord = async (
+    // Function to export the selected schedule to PDF
+    const exportScheduleToPDF = async (
       scheduleData: CourseInSchedule[],
       variantIdx: number
     ) => {
       try {
-        // Import the export function dynamically to reduce initial load time
-        const { exportToWord } = await import("../utils/wordExport");
+        // Import the export function dynamically
+        const { exportToPDF } = await import("../utils/pdfExport");
 
-        // Generate the Word document
-        const blob = await exportToWord(scheduleData, variantIdx);
+        // Generate the PDF document
+        const blob = await exportToPDF(scheduleData, variantIdx);
 
         // Create download link
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `Schedule_Option_${variantIdx + 1}.docx`;
+        link.download = `Schedule_Option_${variantIdx + 1}.pdf`;
 
         // Trigger download
         document.body.appendChild(link);
@@ -858,8 +858,13 @@ const createScheduleGrid = (
         window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
       } catch (error) {
-        console.error("Error exporting to Word:", error);
-        alert("Failed to export schedule. Please try again later.");
+        console.error("Error exporting to PDF:", error);
+        Swal.fire({
+          title: "Export Error",
+          text: "Failed to export schedule to PDF. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     };
 
@@ -876,7 +881,7 @@ const createScheduleGrid = (
           </h2>
 
           <button
-            onClick={() => exportScheduleToWord(variant, variantIdx)}
+            onClick={() => exportScheduleToPDF(variant, variantIdx)}
             className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm py-1 px-2 sm:px-3 rounded flex items-center"
           >
             <svg
