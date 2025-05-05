@@ -42,7 +42,6 @@ export const exportToPDF = async (
 
     // Add autoTable plugin to jsPDF instance
     if (typeof doc.autoTable !== "function") {
-      // @ts-ignore
       doc.autoTable = autoTable;
     }
 
@@ -165,7 +164,7 @@ export const exportToPDF = async (
           `${course.count || "N/A"} / ${course.capacity || "N/A"}`,
         ]);
 
-        // @ts-ignore - jspdf-autotable types are not properly recognized
+        // @ts-expect-error - jspdf-autotable types are not properly recognized
         doc.autoTable({
           startY: yPos,
           head: [["Course", "Time", "Room", "Enrollment (Count/Capacity)"]],
@@ -181,7 +180,7 @@ export const exportToPDF = async (
         });
 
         // Update yPos after table
-        // @ts-ignore - accessing internal property
+        // @ts-expect-error - accessing internal property
         yPos = doc.lastAutoTable.finalY + 10;
       }
     });
