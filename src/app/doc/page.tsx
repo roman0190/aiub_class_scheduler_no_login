@@ -84,11 +84,18 @@ const Doc = () => {
                 item.step
               )}
             </p>
-            <img
-              src={item.image}
-              alt={`Illustration for step ${index + 1}`}
-              className="w-full max-w-md rounded object-cover scale-100 hover:scale-105 transition-transform duration-300 border-2 border-blue-400"
-            />
+            <div className="rounded-xl overflow-hidden bg-gradient-to-b from-gray-100 to-gray-300 p-3 shadow-2xl">
+              <div className="flex items-center justify-start space-x-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <img
+                src={item.image}
+                alt={`Illustration for step ${index + 1}`}
+                className="w-full rounded-lg object-cover scale-100 hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
         ))}
       </div>

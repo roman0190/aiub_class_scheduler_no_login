@@ -16,61 +16,6 @@ const timeToMinutes = (time: string): number => {
   return hour * 60 + minute;
 };
 
-// Improved function to generate more accurate time slots
-const generateTimeSlots = (courses: Course[]) => {
-  // Set default time range if no courses are selected
-  let minTime = 8 * 60; // 8:00 AM
-  let maxTime = 18 * 60; // 6:00 PM
-
-  // Iterate through the courses and find the min start time and max end time
-  if (courses.length > 0) {
-    minTime = Number.MAX_SAFE_INTEGER;
-    maxTime = 0;
-
-    courses.forEach((course) => {
-      course.schedule.forEach((schedule) => {
-        const startTime = timeToMinutes(schedule.timeStart);
-        const endTime = timeToMinutes(schedule.timeEnd);
-
-        minTime = Math.min(minTime, startTime);
-        maxTime = Math.max(maxTime, endTime);
-      });
-    });
-
-    // Add some padding
-    minTime = Math.max(0, minTime - 30);
-    maxTime = maxTime + 30;
-  }
-
-  // Generate the time slots array dynamically
-  const timeSlots = [];
-  let currentTime = minTime;
-
-  // Use shorter slots for better precision (45 minutes)
-  const slotDuration = 45;
-
-  while (currentTime < maxTime) {
-    const startHour = Math.floor(currentTime / 60);
-    const startMinute = currentTime % 60;
-    const endTime = currentTime + slotDuration;
-    const endHour = Math.floor(endTime / 60);
-    const endMinute = endTime % 60;
-
-    const startTimeStr = `${startHour % 12 || 12}:${String(
-      startMinute
-    ).padStart(2, "0")} ${startHour < 12 ? "AM" : "PM"}`;
-    const endTimeStr = `${endHour % 12 || 12}:${String(endMinute).padStart(
-      2,
-      "0"
-    )} ${endHour < 12 ? "AM" : "PM"}`;
-
-    timeSlots.push(`${startTimeStr} - ${endTimeStr}`);
-    currentTime = endTime;
-  }
-
-  return timeSlots;
-};
-
 // Enhanced function to check if two schedules conflict with detailed reason
 const checkConflictWithReason = (
   schedule1: TimeSchedule[],
@@ -880,24 +825,95 @@ const createScheduleGrid = (
             {Object.keys(selectedCourses).length} courses)
           </h2>
 
-          <button
-            onClick={() => exportScheduleToPDF(variant, variantIdx)}
-            className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm py-1 px-2 sm:px-3 rounded flex items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+          <div className="flex gap-2">
+            <button
+              onClick={async () => {
+                try {
+                  const scheduleInfo = {
+                    courses: variant,
+                    variant: variantIdx + 1,
+                    timestamp: Date.now(),
+                  };
+
+                  // Create short URL
+                  const response = await fetch("/api/shorten", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ scheduleData: scheduleInfo }),
+                  });
+
+                  const result = await response.json();
+
+                  if (result.success) {
+                    navigator.clipboard.writeText(result.url).then(() => {
+                      Swal.fire({
+                        icon: "success",
+                        title: "Short Link Copied!",
+                        text: `Short URL: ${result.url
+                          .split("/")
+                          .pop()} - Much easier to share!`,
+                        timer: 3000,
+                      });
+                    });
+                  } else {
+                    throw new Error(result.error);
+                  }
+                } catch (error) {
+                  console.error("Error creating short URL:", error);
+                  // Fallback to long URL if shortener fails
+                  const baseUrl = window.location.origin;
+                  const scheduleInfo = {
+                    courses: variant,
+                    variant: variantIdx + 1,
+                    timestamp: Date.now(),
+                  };
+                  const encodedSchedule = encodeURIComponent(
+                    JSON.stringify(scheduleInfo)
+                  );
+                  const shareLink = `${baseUrl}/shared?schedule=${encodedSchedule}`;
+
+                  navigator.clipboard.writeText(shareLink).then(() => {
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Link Copied (Long Version)",
+                      text: "Short URL service unavailable, using full link instead.",
+                      timer: 3000,
+                    });
+                  });
+                }
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm py-1 px-2 sm:px-3 rounded flex items-center"
             >
-              <path
-                fillRule="evenodd"
-                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Export
-          </button>
+              <svg
+                className="h-4 w-4 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+              </svg>
+              Copy course Link
+            </button>
+
+            <button
+              onClick={() => exportScheduleToPDF(variant, variantIdx)}
+              className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm py-1 px-2 sm:px-3 rounded flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Export
+            </button>
+          </div>
         </div>
 
         {/* Better visual representation of the schedule by day */}
@@ -906,7 +922,7 @@ const createScheduleGrid = (
             Weekly Schedule:
           </h3>
           <div className="space-y-4">
-            {/* Always show all days in order, even if empty */}
+            {/* Always show all days in order, even empty ones */}
             {daysOfWeek.map((day) => {
               const daySchedule = scheduleByDay[day];
               const freeTimes = freeTimeByDay[day];
@@ -1251,17 +1267,6 @@ const CourseScheduler = ({
   }>({});
   const [showConflictAnalysis, setShowConflictAnalysis] = useState(false);
 
-  // Use useMemo to prevent unnecessary recalculation of timeSlots
-  const timeSlots = useMemo(
-    () =>
-      generateTimeSlots(
-        Object.values(scheduledCourses).length > 0
-          ? Object.values(scheduledCourses).flat()
-          : Object.values(selectedCourses).flat()
-      ),
-    [selectedCourses, scheduledCourses, scheduleCreated]
-  );
-
   // Modify the handleCreateSchedule function to always regenerate new variants (no caching)
   const handleCreateSchedule = useCallback(() => {
     setLoading(true);
@@ -1310,12 +1315,6 @@ const CourseScheduler = ({
     return "Create Schedule";
   }, [loading, scheduleCreated, selectedCourses, scheduledCourses]);
 
-  // Memoize the grid display to prevent unnecessary re-renders
-  const scheduleGrid = useMemo(() => {
-    if (validVariants.length === 0 || !scheduleCreated) return null;
-    return createScheduleGrid(validVariants, scheduledCourses);
-  }, [validVariants, scheduledCourses, timeSlots, scheduleCreated]);
-
   // Clear schedule when selected courses change significantly
   useEffect(() => {
     if (
@@ -1325,7 +1324,13 @@ const CourseScheduler = ({
     ) {
       setScheduleCreated(false);
     }
-  }, [selectedCourses, scheduledCourses]);
+  }, [selectedCourses, scheduledCourses, scheduleCreated]);
+
+  // Memoize the grid display to prevent unnecessary re-renders
+  const scheduleGrid = useMemo(() => {
+    if (validVariants.length === 0 || !scheduleCreated) return null;
+    return createScheduleGrid(validVariants, scheduledCourses);
+  }, [validVariants, scheduledCourses, scheduleCreated]);
 
   // Calculate AI suggestion when variants change
   useEffect(() => {
@@ -1506,15 +1511,18 @@ const CourseScheduler = ({
         {buttonText}
       </button>
 
-      {/* New button to regenerate different combinations */}
+      {/* New button to regenerate different combinations - Better Floating */}
       {scheduleCreated && !loading && (
-        <div className="mb-4 text-center">
+        <div className="fixed bottom-8 left-8 z-50">
           <button
             onClick={handleCreateSchedule}
-            className="flex items-center justify-center text-blue-600 hover:text-blue-800 font-medium"
+            className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 group animate-pulse hover:animate-none"
           >
-            <span className="mr-2">↻</span>
-            Click here to create more different combination
+            <span className="text-2xl group-hover:rotate-180 transition-transform duration-500">
+              ↻
+            </span>
+            <span className="hidden sm:inline">Generate New Combinations</span>
+            <span className="sm:hidden">New</span>
           </button>
         </div>
       )}
