@@ -76,8 +76,11 @@ const Home = () => {
             AIUB Class Scheduler
           </h1>
           <p className="text-lg text-gray-600">
-            Create your perfect class schedule with ease
+            Create your perfect class schedule with{" "}
           </p>
+          <a href="/doc" className="underline text-blue-600">
+            How to use?
+          </a>
         </header>
 
         {/* File Upload Section */}
