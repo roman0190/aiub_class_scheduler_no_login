@@ -42,7 +42,7 @@ const steps = [
   {
     step: "Join our Discord community for support and updates.",
     image: "/images/discord.png",
-    link: "https://discord.com/invite/jstr5NW6",
+    link: "https://discord.gg/TU4Gd5e4qK",
   },
 ];
 

@@ -1,4 +1,4 @@
-🗓️ AIUB Class Scheduler – Smart Class Routine Generator (https://www.aiubclassscheduler.me/)
+🗓️ AIUB Class Scheduler – Smart Class Routine Generator (https://aiub-class-scheduler-no-login.vercel.app/)
 
 This is a Next.js project bootstrapped with create-next-app.
 
@@ -25,7 +25,7 @@ Respecting this advisory, login has been removed from the app. You can now secur
 💡 How It Works
 	1.	Login to the AIUB Portal
 	2.	Download the “Offered Courses” Excel (.xlsx) file
-	3.	Visit: https://www.aiubclassscheduler.me/
+	3.	Visit: https://aiub-class-scheduler-no-login.vercel.app/
 	4.	Upload the file
 	5.	Select your preferred courses
 	6.	Instantly generate clash-free schedules
@@ -40,10 +40,10 @@ Respecting this advisory, login has been removed from the app. You can now secur
 	•	State Management: Context API
 
 🔗 Try it now:
-👉 https://www.aiubclassscheduler.me/
+👉 https://aiub-class-scheduler-no-login.vercel.app/
 
 🧑‍💻 Developed by: Roman Howladar  
-🎯 Join our Discord: https://discord.com/invite/jstr5NW6  
+🎯 Join our Discord: https://discord.gg/TU4Gd5e4qK  
 💻 Open-source on GitHub: https://github.com/roman0190/aiub_class_scheduler
 
 📌 Note:
